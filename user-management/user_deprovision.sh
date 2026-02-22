@@ -127,7 +127,8 @@ user_exec(){
 
 check_root
 
-# Flags
+username=""
+file=""
 do_backup=false
 do_delete=false
 do_disable=false
