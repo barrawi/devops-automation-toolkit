@@ -162,9 +162,10 @@ if [ -n "$file" ]; then
 
     while read -u 3 -r line; do # read line by line assing to var line
         user_clean=$(echo "$line" | xargs)
-        if [[ -n "$user_clean" ]]; then
-            user_exec "$user_clean" || true # set -e would stop the script here without the true
-        fi
+        if [[ -z "$user_clean" || "$user_clean" == \#* ]]; then # avoids reading commented lines
+        continue
+	fi
+	user_exec "$user_clean" || true # set -e would stop the script here without the true
     done 3< "$file"
 
 elif [ -n "$username" ]; then
