@@ -1,0 +1,8 @@
+---
+- name: Bootstrap CentOS Server
+  hosts: all
+  become: yes
+
+  roles:
+    - common
+    - users

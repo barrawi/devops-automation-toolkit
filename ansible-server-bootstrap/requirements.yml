@@ -1,0 +1,8 @@
+---
+# This file tracks external role dependencies.
+# Install using: ansible-galaxy install -r requirements.yml
+
+roles:
+  # In a larger project, we can include community roles here:
+  - src: geerlingguy.firewall
+    version: 2.0.0

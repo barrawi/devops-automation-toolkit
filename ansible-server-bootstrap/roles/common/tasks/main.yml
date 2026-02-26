@@ -1,0 +1,15 @@
+---
+- name: Update all systems packages
+  ansible.builtin.dnf: # RHEL manager
+    name: "*"
+    state: latest # tells Ansible to update if not latest version
+
+- name: Install essential packages
+  ansible.builtin.dnf: # RHEL manager
+    name: 
+      - vim
+      - curl
+      - wget
+      - git
+      - firewalld
+    state: present # only install if not installed already

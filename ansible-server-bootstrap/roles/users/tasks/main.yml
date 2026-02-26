@@ -1,0 +1,28 @@
+---
+- name: Create administrator user  # devops
+  ansible.builtin.user: # user module
+    name: "{{ admin_username }}" 
+    groups: wheel
+    append: yes # added to wheel without removing from other groups
+    shell: /bin/bash
+    state: present # if user exists do not create
+    password_lock: yes # no passwrod login only ssh key
+
+# setting up the Local File Lookup
+- name:
+  ansible.builtin.authorized_key:
+    user: "{{ admin_username }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+# passwordless sudo
+- name: Allow wheel users for passwordless sudo
+  # make sure file exists in line
+  ansible.builtin.lineinfile:
+    # dedicated file for this rule
+    path: /etc/sudoers.d/wheel_passwordless
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL" # allowheel to run with no password
+    create: yes # if file not exist then create
+    mode: '0440' # file permissions   
+    validate: '/usr/sbin/visudo -cf %s'
+

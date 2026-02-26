@@ -1,0 +1,12 @@
+# Ignore Ansible retry files
+*.retry
+
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+
+# Ignore Vim swap files
+*.swp
+
+# Ignore vault password
+.vault_pass
