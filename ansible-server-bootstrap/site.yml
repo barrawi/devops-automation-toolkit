@@ -4,5 +4,7 @@
   become: yes
 
   roles:
-    - common
-    - users
+    - common # system preparation
+    - users # create secure administrative user & add ssh key
+    - ssh_hardening # disable passwords now that key is confirmed
+

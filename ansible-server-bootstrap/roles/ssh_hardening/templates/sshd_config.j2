@@ -1,0 +1,16 @@
+# Managed by Ansible - SSH Hardening Template
+Protocol 2 # Use SSH-2
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Security Settings
+PermitRootLogin no # cannot log as root
+PasswordAuthentication no # disable password
+PubkeyAuthentication yes # use keys
+AuthorizedKeysFile .ssh/authorized_keys 
+
+# Performance/Defaults
+X11Forwarding no 
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/libexec/openssh/sftp-server
+
