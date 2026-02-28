@@ -1,14 +1,23 @@
 """
 Content Exporter
 An AI Collaborating tool that transforms a directory/file structure into readable
-material for AI auditing
+material for AI auditing.
+Wilberth Barrantes Calderon
 """
 
 import fnmatch
 import os
 
 output_file = "content_exporter.txt"
-include = {".yml", ".yaml", ".ini", ".j2", ".cfg"}  # files to include
+include = {
+    ".yml",
+    ".yaml",
+    ".ini",
+    ".j2",
+    ".cfg",
+    ".py",
+    ".sh",
+}  # files to include
 no_include = {
     "password",
     "secret",
