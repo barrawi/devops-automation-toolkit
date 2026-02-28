@@ -29,3 +29,11 @@
     state: enabled
     immediate: yes
   when: ssh_port != 22
+
+- name: Permit all traffic form Tailscale
+  ansible.posix.firewalld:
+    zone: trusted # highest permission
+    interface: tailscale0
+    permanent: yes
+    state: enabled
+    immediate: yes # apply changes live

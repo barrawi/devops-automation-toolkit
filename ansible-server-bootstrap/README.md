@@ -10,21 +10,30 @@ This project automates the "Day 0" setup to ensure:
 * **Consistency**: Essential packages (Vim, Curl, Git) are installed on every run.
 * **Efficiency**: Passwordless Sudo is configured for streamlined automation.
 
-## Tech Stack
-* **Controller**: Arch Linux
-* **Managed Node**: CentOS 9 Stream (VM)
-* **Tooling**: Ansible, Ansible-Vault, OpenSSH
+## Infrastructure Architecture
+* **Management**: Arch Linux (Controller) -> CentOS 9 (Node)
+* **Access**: Secure Tunnel via Tailscale (WireGuard)
+* **Web**: Nginx serving dynamic host metadata
 
 ## Project Structure
 * `roles/common`: Updates dnf packages and installs core utilities.
 * `roles/users`: Creates a `devops` user, manages SSH authorized keys, and configures sudoers.
-* `roles/ssh_hardening`: Secures the OpenSSH daemon using a Jinja2 template to enforce key based authentication, disable root login, and prevent brute force attacks via password disablement. 
-* `roles/firewall`: Manages the system perimeter by ensuring the firewalld service is active and properly configured to allow only authorized traffic, with built in support for non-standard SSH ports.
+* `roles/ssh_hardening`: Secures the OpenSSH daemon using a Jinja2 template to enforce key based authentication, disable root login, and prevent brute force attacks via password disablement.
+* `roles/firewall`: Manages the system perimeter by ensuring the firewalld service is active and properly configured to allow only authorized traffic, with built in support for non-standard SSH ports. 
+* `roles/nginx`: Deploys a web server instance using a dynamic Jinja2 template. It captures and displays system-level metadata (hostname and deployment timestamp) using Ansible Facts, demonstrating the ability to generate dynamic configuration content.
 
 ## Setup
 * **Secrets**: Create an encrypted vault file to store your sudo password.
    ```bash
    ansible-vault create group_vars/all.yml
+
+## How to Run
+1. **Clone the Repo**: `git clone https://github.com/youruser/linux-sysadmin-labs.git`
+2. **Setup Inventory**: Update `inventory/hosts.ini` with your VM's IP address.
+3. **Vault Setup**: Ensure your `vault.yml` contains your `ansible_become_pass` and `tailscale_auth_key`.
+4. **Execute the Playbook**:
+   ```bash
+   ansible-playbook -i inventory/hosts.ini site.yml --ask-vault-pass
 
 ## Technical Challenges & Solutions
 

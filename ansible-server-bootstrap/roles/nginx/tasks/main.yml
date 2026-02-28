@@ -1,0 +1,20 @@
+---
+- name: Install Nginx package
+  ansible.builtin.dnf:
+    name: nginx
+    state: present
+
+- name: Start and enable Nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: started # is server running?
+    enabled: yes # if reboot start ngix 
+
+- name: Deploy custom index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    owner: root
+    group: wheel
+    mode: '0664' # only root and group edit, others read
+  notify: restart nginx # if index changes restart nginx
