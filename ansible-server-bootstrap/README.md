@@ -41,14 +41,17 @@ This project automates the "Day 0" setup to ensure:
 
 ### The "Perfect Storm" SSH Lockout: 
 **Challenge**: During the SSH hardening phase, applying `PasswordAuthentication` no resulted in a total lockout. The `authorized_keys` file was being ignored by the OpenSSH daemon.
+
 **Solution**: Conducted a root cause analysis via the hypervisor console. Identified a strict ownership/permissions conflict where the key file was created with `0644` permissions. Refactored the `users` role to explicitly enforce `0700` on the `.ssh` directory and utilize `manage_dir: yes` to satisfy SSH's strict security requirements.
 
 ### Secure Secret management
 **Challenge**: Needed to provide a sudo password and API keys without hardcoding them in plain text.
+
 **Solution**: Implemented Ansible Vault to encrypt sensitive variables. Used environment_specific `group_vars` to store encrypted credentials, ensuring the repository remains safe for public version control.
 
 ### Zero-Trust Network segmentation
 **Challenge**: Standard firewall rules were blocking legitimate internal traffic while leaving public ports unnecessarily exposed.
+
 **Solution**: Migrated from standard port blocking to a Zone Based Firewall architecture. Bound the `tailscale0` interface to the trusted zone, allowing internal Nginx routing entirely through the encrypted WireGuard mesh while keeping the node completely dark on the public LAN.
 
 # Feedback and Contributions
