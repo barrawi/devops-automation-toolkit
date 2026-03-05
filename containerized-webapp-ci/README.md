@@ -13,6 +13,7 @@ The goal is to provide a "Development to Production" blueprint that reduces imag
 - **Multi-Stage Dockerfile**: Uses a Python 3.11 "Builder" image to compile dependencies and a Red Hat UBI9 minimal "Runtime" image to serve the app resulting in an 82% image size reduction from 1.55GB down to 286MB.
 - **CI/CD Pipeline**: GitHub Actions workflow automatically runs the test suite and builds the Docker image on every push to `main`. Broken code is caught before it can be deployed.
 - **Test-Driven Development**: pytest test suite with fakeredis for fully isolated, dependency free testing. Redis is injected via Flask config so test infrastructure stays completely separate from production code.
+- **Docker Hub Integration**: On a successful build, the pipeline automatically tags and pushes the image to Docker Hub using encrypted GitHub Secrets for authentication no credentials are ever stored in the codebase.
 - **Security Hardening**:
   - Runs as a non root `webuser` (UID 1001).
   - No unnecessary tools (like `ping` or `curl`) included in the final image to prevent lateral movement.
@@ -62,7 +63,11 @@ Install dependencies
       ↓
 Run pytest ← fails here if tests break, build is blocked
       ↓
+Log in to Docker Hub
+      ↓
 Build Docker image
+      ↓
+Push to Docker Hub ← image is publicly available automatically
 ```
 
 This ensures no broken code ever reaches the build stage.
