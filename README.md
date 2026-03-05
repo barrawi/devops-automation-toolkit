@@ -22,6 +22,7 @@ A multi role project that transforms a fresh CentOS 9 installation into a harden
 A Flask web application containerized with Docker and deployed through a fully automated CI/CD pipeline.
 - **Containerization**: Multi stage Docker build using RHEL UBI9 minimal image to reduce attack surface and image size. App runs as a non privileged user.
 - **CI/CD Pipeline**: GitHub Actions workflow automatically runs tests and builds the Docker image on every push to `main` — broken code is caught before it can be deployed.
+- **Automated Image Publishing**: The GitHub Actions pipeline automatically pushes the production image to Docker Hub on every successful build credentials managed securely via GitHub Secrets, never stored in code.
 - **Test-Driven**: pytest test suite with fakeredis for isolated, dependency-free testing. Redis connection is injected via Flask config to keep test code fully separate from production code.
 - **Redis Integration**: Redis health check exposed via `/json` endpoint. Graceful fallback handling ensures the app never crashes when Redis is unavailable.
 - **Security**: Secrets managed via `.env` file, excluded from version control. Non root container user enforced at the Docker level.
@@ -57,6 +58,7 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 | Automation | Ansible (Roles, Playbooks, Vault, Handlers) |
 | Containerization | Docker, Docker Compose |
 | CI/CD | GitHub Actions |
+| Container Registry | Docker Hub |
 | Security | Tailscale/WireGuard, SSH Hardening, Firewalld |
 | Languages | Python (Flask, pytest), Bash |
 | Databases | Redis |
