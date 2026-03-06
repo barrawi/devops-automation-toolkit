@@ -1,10 +1,5 @@
 ---
 
-- name: Remove old broken Docker repo if present
-  ansible.builtin.file:
-    path: /etc/yum.repos.d/download.docker.com_linux_rhel_docker-ce.add-repo.repo
-    state: absent 
-
 - name: Install podman and required dependencies
   ansible.builtin.dnf:
     name:
