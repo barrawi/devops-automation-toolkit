@@ -24,3 +24,6 @@
     
     - role: podman # webapp container
       tags: [ podman, containers ]
+
+    - role: deploy_key
+      tags: [ deploy_key, security ]

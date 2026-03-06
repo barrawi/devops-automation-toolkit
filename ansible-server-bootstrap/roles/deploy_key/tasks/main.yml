@@ -1,0 +1,27 @@
+---
+
+- name: Generate github actions deploy key 
+  community.crypto.openssh_keypair:
+    path: "~/.ssh/github_actions_deploy"
+    type: ed25519
+    comment: "github-actions-deploy"
+    force: no # wont overwrite if already there
+  delegate_to: localhost # run on host machine too
+  become: no
+  run_once: true # only generate once 
+
+- name: Read public key
+  ansible.builtin.slurp:
+    src: "~/.ssh/github_actions_deploy.pub"
+  register: pubkey 
+  delegate_to: localhost
+  become: no
+  run_once: true
+
+- name: Add deploy public key to volumes
+  ansible.builtin.authorized_key: 
+    user: "{{ admin_username }}"
+    state: present
+    key: "{{ pubkey.content | b64decode }}"
+
+    

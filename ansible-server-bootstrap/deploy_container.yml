@@ -1,0 +1,19 @@
+---
+
+- name: Deploy containerized webapp 
+  hosts: webservers 
+  become: yes
+
+  tasks:
+    - name: Pull latest image from Docker Hub
+      containers.podman.podman_image:
+        name: "{{ dockerhub_username }}/containerized-webapp"
+        tag: latest 
+        force: yes # pull even if already exists 
+
+    - name: Run stack with podman-compose 
+      ansible.builtin.command:
+        cmd: podman-compose up -d --force-recreate
+        chdir: "{{ app_deploy_dir }}"
+      become_user: "{{ admin_username }}"
+
