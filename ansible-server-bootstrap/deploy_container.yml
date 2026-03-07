@@ -7,7 +7,7 @@
   tasks:
     - name: Pull latest image from Docker Hub
       containers.podman.podman_image:
-        name: "{{ dockerhub_username }}/containerized-webapp"
+        name: "docker.io/{{ dockerhub_username }}/containerized-webapp"
         tag: latest 
         force: yes # pull even if already exists 
 
