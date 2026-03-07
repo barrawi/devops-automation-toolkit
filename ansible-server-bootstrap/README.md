@@ -1,5 +1,7 @@
 # RHEL Enterprise Stream Server Bootstrap (Zero Trust Architecture)
 
+[![CI Pipeline](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml)
+
 An automated Ansible project to transform a fresh RHEL installation into a secured,
 production ready workstation within a Zero Trust Network — and serve as the continuous
 deployment backbone for the containerized webapp.

@@ -1,4 +1,7 @@
 # Linux SysAdmin & DevOps Portfolio Toolkit
+
+[![CI Pipeline](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml)
+
 This repository serves as a collection of labs and projects focused on Infrastructure-as-Code (IaC), Linux System Hardening, CI/CD Automation, and Containerization.
 
 The goal of these labs is to demonstrate a production-ready approach to managing Linux environments prioritizing security, idempotency, and comprehensive documentation

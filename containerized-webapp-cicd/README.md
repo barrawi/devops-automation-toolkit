@@ -1,5 +1,7 @@
 # Containerized Webapp & Redis Toolkit (Secure DevOps Pattern)
 
+[![CI Pipeline](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/barrawi/devops-automation-toolkit/actions/workflows/ci.yml)
+
 ## Project Overview
 
 This project demonstrates a production hardened approach to containerizing a Python Flask application and a Redis cache. Moving beyond a simple "Hello World," this lab focuses on Multi-Stage Builds, Non Privileged User Security, Automated Testing, and a full CI/CD pipeline using GitHub Actions.
