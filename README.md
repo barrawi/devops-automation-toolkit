@@ -9,23 +9,28 @@ The goal of these labs is to demonstrate a production-ready approach to managing
 ## Core projects
 
 ### Automated Server Bootstrap (Ansible)
-A multi role project that transforms a fresh CentOS 9 installation into a hardened, production ready node.
-- **Zero-Trust Networking**: Integrated Tailscale (WireGuard) to establish secure, encrypted management tunnels.
-- **Security Hardening**: Automated OpenSSH configuration (disabling root login, enforcing key-based auth) and firewalld orchestration.
+A multi role project that transforms a fresh RHEL installation into a hardened, production-ready node and serves as the deployment backbone for the containerized webapp.
+- **Zero-Trust Networking**: Integrated Tailscale (WireGuard) to establish secure, encrypted management tunnels. All CI/CD traffic flows through the Tailscale mesh — VMs are completely dark on the public LAN.
+- **Security Hardening**: Automated OpenSSH configuration (disabling root login, enforcing key-based auth) and firewalld zone-based segmentation.
+- **Dynamic Inventory**: Custom Python script queries the Tailscale API at runtime to discover prod VMs by tag — no static IP files to maintain. IP changes are handled automatically.
+- **Automated Deployment Key Management**: Ansible generates an ed25519 SSH key pair locally, distributes the public key to all prod VMs, and stores the private key for use by GitHub Actions — zero manual key management.
+- **Continuous Deployment**: GitHub Actions SSHes into all 3 prod VMs via Tailscale on every successful push to `main`, pulls the latest image from Docker Hub, and restarts the stack with podman-compose.
 - **Web Orchestration**: Dynamic deployment of Nginx using Jinja2 templates and Ansible Facts.
+
 <img width="1275" height="55" alt="image" src="https://github.com/user-attachments/assets/f2ba7d06-18f1-43dd-ac68-8ce3a118f196" />
 
 ---
 
 
 ### Containerized Web App with CI/CD Pipeline
-A Flask web application containerized with Docker and deployed through a fully automated CI/CD pipeline.
+A Flask web application containerized with Docker and deployed through a fully automated CI/CD pipeline to a 3 node production cluster.
 - **Containerization**: Multi stage Docker build using RHEL UBI9 minimal image to reduce attack surface and image size. App runs as a non privileged user.
-- **CI/CD Pipeline**: GitHub Actions workflow automatically runs tests and builds the Docker image on every push to `main` — broken code is caught before it can be deployed.
-- **Automated Image Publishing**: The GitHub Actions pipeline automatically pushes the production image to Docker Hub on every successful build credentials managed securely via GitHub Secrets, never stored in code.
-- **Test-Driven**: pytest test suite with fakeredis for isolated, dependency-free testing. Redis connection is injected via Flask config to keep test code fully separate from production code.
+- **CI/CD Pipeline**: GitHub Actions workflow automatically runs tests, builds and pushes the Docker image, and deploys to all 3 prod VMs on every push to `main` — broken code is caught before it can be deployed.
+- **Automated Image Publishing**: Pipeline pushes the production image to Docker Hub on every successful build. Credentials managed securely via GitHub Secrets, never stored in code.
+- **Test-Driven**: pytest test suite with fakeredis for isolated, dependency free testing. Redis connection is injected via Flask config to keep test code fully separate from production code.
 - **Redis Integration**: Redis health check exposed via `/json` endpoint. Graceful fallback handling ensures the app never crashes when Redis is unavailable.
-- **Security**: Secrets managed via `.env` file, excluded from version control. Non root container user enforced at the Docker level.
+- **Security**: Secrets managed via `.env` file, excluded from version control. Non-root container user enforced at the Docker level.
+
 <img width="963" height="160" alt="image" src="https://github.com/user-attachments/assets/59e15a94-a736-46d3-b75a-0edfe1c2aa30" />
 
 *Multi-stage build reduced the final image size by 82% — from 1.55GB(my-webapp:v1) down to 286MB(webapp:prod) — by separating the build environment from the runtime image and using RHEL UBI9 minimal as the production base.*
@@ -38,6 +43,7 @@ A small suite of defensive shell scripts designed for enterprise-scale user mana
 - **Safety First**: Implemented set -euo pipefail and root-privilege validation to ensure script reliability.
 - **Idempotent Logic**: Scripts verify existing system states (e.g., checking if a user exists or is logged in) before execution to prevent system errors.
 - **Auditability**: All actions are logged to /var/log/user_administration.log with timestamps and actor IDs.
+
 <img width="804" height="25" alt="image" src="https://github.com/user-attachments/assets/90487df9-8cc6-49db-9c5d-b1aec4ff1180" />
 
 ---
@@ -46,6 +52,7 @@ A small suite of defensive shell scripts designed for enterprise-scale user mana
 A custom utility built to facilitate secure code auditing and AI collaboration.
 - **Security Filtering**: Automatically detects and redacts sensitive data and Ansible Vault headers during export.
 - **Pattern Matching**: Respects `.gitignore` patterns and filters by file extension to provide clean, relevant technical context.
+
 <img width="405" height="396" alt="image" src="https://github.com/user-attachments/assets/6cc3f449-91d2-4df2-be8f-4ed0156ba811" />
 
 ---
@@ -55,21 +62,24 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 | Category | Tools |
 |---|---|
 | Operating Systems | Red Hat / CentOS 9 Stream, Arch Linux (Controller) |
-| Automation | Ansible (Roles, Playbooks, Vault, Handlers) |
-| Containerization | Docker, Docker Compose |
+| Automation | Ansible (Roles, Playbooks, Vault, Handlers, Dynamic Inventory) |
+| Containerization | Docker, Podman, podman-compose |
 | CI/CD | GitHub Actions |
 | Container Registry | Docker Hub |
-| Security | Tailscale/WireGuard, SSH Hardening, Firewalld |
+| Security | Tailscale/WireGuard, SSH Hardening, Firewalld, Ansible Vault |
 | Languages | Python (Flask, pytest), Bash |
 | Databases | Redis |
+| Networking | Zero Trust VPN Overlay, mDNS, Zone-based Firewall |
 
 ---
 
 ## My Technical Philosophy
+
 - **Security by Default**: Every lab starts with a "Default Deny" posture. Access is only granted through secure, encrypted tunnels.
 - **Documentation as Code**: Every project includes Standard Operating Procedures (SOPs) and Runbooks to ensure that infrastructure is not just automated, but maintainable.
 - **Idempotency**: All automation is designed to be run multiple times without changing the result beyond the initial application, ensuring system stability.
 - **Shift Left Testing**: Tests run automatically at the earliest possible stage — on every push, before any deployment — so bugs are caught cheaply and fast.
+- **Dynamic over Static**: Infrastructure should adapt automatically. Static IP files and hardcoded values are replaced with dynamic discovery wherever possible.
 
 ---
 
@@ -77,8 +87,8 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 
 - Transition local VM labs to AWS/Cloud environments.
 - Implement Terraform for automated resource provisioning.
-- Add automated deployment step to CI/CD pipeline (push to main → auto-deploy to server).
-- Expand test coverage with Testinfra for post deployment server validation.
+- Add Nginx reverse proxy configuration to sit in front of the Flask app.
+- Expand test coverage with Testinfra for post-deployment server validation.
 
 ---
 
