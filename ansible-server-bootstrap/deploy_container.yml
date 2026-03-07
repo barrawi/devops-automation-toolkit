@@ -11,14 +11,19 @@
         tag: latest 
         force: yes # pull even if already exists 
 
+    - name: Get devops UID
+      ansible.builtin.command:
+        cmd: id -u {{ admin_username }}
+      register: devops_uid
+      changed_when: false
+
     - name: Run stack with podman-compose 
       ansible.builtin.command:
-        cmd: podman-compose up -d --force-recreate
+        cmd: /usr/local/bin/podman-compose up -d --force-recreate
         chdir: "{{ app_deploy_dir }}"
-      become: yes
-      environment:
-        XDG_RUNTIME_DIR: "/run/user/{{ hostvars[inventory_hostname]['ansible_user_uid'] | default('1000') }}"
       become_user: "{{ admin_username }}"
-      register: compose_output
-      ignore_errors: no
-
+      environment:
+        # added explicit PATH 
+        # also aimed for devops UID
+        PATH: "/usr/local/bin:/usr/bin:/bin" 
+        XDG_RUNTIME_DIR: "/run/user/{{ devops_uid.stdout }}"
