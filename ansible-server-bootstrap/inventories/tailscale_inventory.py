@@ -56,6 +56,9 @@ def build_inventory(devices):
         name = device["hostname"]
         ip = device["addresses"][0]  # first address is always tailscale ip
 
+        if name.startswith("github-"):  # avoid runner
+            continue
+
         hosts[name] = {
             "ansible_host": ip,
             "ansible_user": ANSIBLE_USER,  # dehardcoded
