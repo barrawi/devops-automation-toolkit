@@ -28,7 +28,7 @@
 
 - name: Set Tailscale up
   ansible.builtin.command:
-    cmd: "tailscale up --auth_key={{ tailscale_key }} --advertise-tags=tag:prod --reset"
+    cmd: "tailscale up --auth-key={{ tailscale_key }} --advertise-tags=tag:prod --reset"
   register: tailscale_up
   changed_when: "'already authenticated' not in tailscale_up.stderr"
 
