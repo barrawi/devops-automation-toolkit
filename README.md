@@ -33,6 +33,15 @@ A multi role project that transforms a fresh RHEL installation into a hardened, 
 
 ---
 
+### Kubernetes Container Orchestration
+The containerized Flask + Redis application deployed to a Kubernetes cluster — demonstrating production grade container orchestration with load balancing, service discovery, and Ingress routing.
+- **Multi-Replica Deployment**: Flask app runs as 2 replicas with automatic load balancing across pods. Kubernetes restarts failed pods automatically with no manual intervention.
+- **Service Discovery**: Pods communicate via stable service names rather than dynamic IPs — Redis is reachable as `redis-service` regardless of pod restarts or rescheduling.
+- **Nginx Ingress**: External traffic routed through an Nginx Ingress controller on port 80 — no hardcoded NodePorts or manual Nginx configuration required.
+- **ConfigMap-driven Configuration**: Environment variables decoupled from the container image and injected at runtime — configuration changes without image rebuilds.
+- **Rolling Updates**: Kubernetes replaces pods one at a time during deployments — zero downtime updates out of the box.
+
+---
 
 ### Containerized Web App with CI/CD Pipeline
 A Flask web application containerized with Docker and deployed through a fully automated CI/CD pipeline to a 3 node production cluster.
@@ -47,6 +56,14 @@ A Flask web application containerized with Docker and deployed through a fully a
 
 *Multi-stage build reduced the final image size by 82% — from 1.55GB(my-webapp:v1) down to 286MB(webapp:prod) — by separating the build environment from the runtime image and using RHEL UBI9 minimal as the production base.*
 
+---
+
+### Local VM Management (Bash)
+Shell scripts that replace Terraform for local KVM VM provisioning — spin up a full 3 node lab environment from a single command using cloud-init for first-boot automation.
+- **Single Command Setup**: `setup-local-vms.sh` copies the base image, provisions VMs with cloud-init, creates the devops user, injects SSH keys, and joins Tailscale automatically.
+- **Parity with Cloud**: Local VMs join the same Tailscale mesh as cloud nodes — the dynamic Ansible inventory discovers them automatically with no configuration changes.
+- **Clean Teardown**: `destroy-local-vms.sh` stops, undefines, and removes all VM disks cleanly.
+- **Configurable Count**: Pass a number to create or destroy exactly as many VMs as needed.
 
 ---
 
@@ -71,11 +88,13 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 
 ## My Technical Stack
 
+
 | Category | Tools |
 |---|---|
 | Operating Systems | Red Hat Enterprise Linux 10, CentOS 9 Stream, Arch Linux (Controller) |
 | Cloud | AWS (EC2, VPC, Security Groups) |
 | Infrastructure as Code | Terraform |
+| Container Orchestration | Kubernetes (minikube), kubectl, Nginx Ingress |
 | Automation | Ansible (Roles, Playbooks, Vault, Handlers, Dynamic Inventory) |
 | Containerization | Docker, Podman, podman-compose |
 | CI/CD | GitHub Actions |
@@ -83,7 +102,7 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 | Security | Tailscale/WireGuard, SSH Hardening, Firewalld, Ansible Vault |
 | Languages | Python (Flask, pytest), Bash, HCL |
 | Databases | Redis |
-| Networking | Zero Trust VPN Overlay, Zone-based Firewall, AWS VPC |
+| Networking | Zero Trust VPN Overlay, Zone-based Firewall, AWS VPC, Kubernetes Ingress |
 
 ---
 
@@ -99,10 +118,9 @@ A custom utility built to facilitate secure code auditing and AI collaboration.
 
 ## Roadmap
 
-- Transition local VM labs to AWS/Cloud environments.
-- Implement Terraform for automated resource provisioning.
-- Add Nginx reverse proxy configuration to sit in front of the Flask app.
 - Expand test coverage with Testinfra for post-deployment server validation.
+- Add Prometheus and Grafana for observability and monitoring.
+- Integrate Kubernetes deployment into the GitHub Actions CI/CD pipeline.
 
 ---
 
