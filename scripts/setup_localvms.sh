@@ -67,7 +67,7 @@ for i in $(seq 1 $VM_COUNT); do
     echo ">>> Setting up $VM_NAME..."
 
     # skip if already running
-    if virsh -c qemu:///session dominfo "$VM_NAME" &>/dev/null; then
+    if virsh -c qemu:///system dominfo "$VM_NAME" &>/dev/null; then
         echo "    $VM_NAME already exists, skipping."
         continue
     fi
@@ -83,7 +83,7 @@ for i in $(seq 1 $VM_COUNT); do
     # create and boot VM
     echo "    Creating VM..."
     virt-install \
-        --connect qemu:///session \
+        --connect qemu:///system \
         --name "$VM_NAME" \
         --memory $VM_MEMORY \
         --vcpus $VM_VCPUS \

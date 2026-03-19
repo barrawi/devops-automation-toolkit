@@ -20,10 +20,10 @@ for i in $(seq 1 $VM_COUNT); do
     VM_DISK="${IMAGES_DIR}/${VM_NAME}.qcow2"
  
     echo "    Stopping $VM_NAME..."
-    virsh -c qemu:///session destroy "$VM_NAME" 2>/dev/null || true
+    virsh -c qemu:///system destroy "$VM_NAME" 2>/dev/null || true
  
     echo "    Undefining $VM_NAME..."
-    virsh -c qemu:///session undefine "$VM_NAME" 2>/dev/null || true
+    virsh -c qemu:///system undefine "$VM_NAME" 2>/dev/null || true
  
     echo "    Deleting disk $VM_DISK..."
     rm -f "$VM_DISK"
