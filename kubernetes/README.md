@@ -10,6 +10,8 @@ This folder contains the Kubernetes manifests for deploying the containerized Fl
 - **Redis** — single instance, internal only
 - **Nginx Ingress** — routes external traffic to the Flask service
 - **ConfigMap** — injects environment configuration into containers
+- **Resource limits** —  CPU and memory requests/limits defined for all containers
+- **Health probes** —  liveness and readiness probes on Flask (HTTP) and Redis (TCP)
  
 ---
  
@@ -87,6 +89,10 @@ kubernetes/
  
 **Self-healing** — if a pod crashes Kubernetes automatically restarts it. If a node fails pods are rescheduled to healthy nodes.
  
+**Resource management** —  CPU and memory requests/limits defined for every container. Requests guarantee minimum resources for scheduling, limits prevent any single container from consuming excessive resources.
+
+**Health probes** — liveness probes restart unresponsive pods automatically. Readiness probes remove pods from the load balancer during startup or degraded states, ensuring traffic only reaches healthy instances.
+
 ---
  
 # Author
